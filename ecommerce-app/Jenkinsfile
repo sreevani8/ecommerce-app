@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Archive JAR') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                echo 'Deployment stage placeholder.'
+                echo 'For the first practice, copy target/*.jar to EC2 and run it manually.'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'E-Commerce CI pipeline completed successfully.'
+        }
+        failure {
+            echo 'E-Commerce CI pipeline failed.'
+        }
+    }
+}
